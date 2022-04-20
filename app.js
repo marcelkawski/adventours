@@ -23,7 +23,7 @@ app.get('/api/v1/tours', (req, res) => {
 // get the specific tour by id
 app.get('/api/v1/tours/:id', (req, res) => {
     const id = req.params.id * 1;
-    const tour = tours.find((tour) => tour.id === id);
+    const tour = tours.find((t) => t.id === id);
     if (tour) {
         return res.status(200).json({
             status: 'success',
@@ -58,7 +58,7 @@ app.post('/api/v1/tours', (req, res) => {
 // update the specific tour by id
 app.patch('/api/v1/tours/:id', (req, res) => {
     const id = req.params.id * 1;
-    let tour = tours.find((tour) => tour.id === id);
+    let tour = tours.find((t) => t.id === id);
 
     if (!tour) {
         return res.status(404).json({
@@ -68,8 +68,8 @@ app.patch('/api/v1/tours/:id', (req, res) => {
     }
 
     const updatedTour = Object.assign(tour, req.body);
-    const updatedTours = tours.map((tour) =>
-        tour.id === updatedTour.id ? updatedTour : tour
+    const updatedTours = tours.map((t) =>
+        t.id === updatedTour.id ? updatedTour : t
     );
 
     fs.writeFile(dataFilePath, JSON.stringify(updatedTours), (err) => {
@@ -78,6 +78,28 @@ app.patch('/api/v1/tours/:id', (req, res) => {
             data: {
                 updatedTour,
             },
+        });
+    });
+});
+
+// delete the specific tour by id
+app.delete('/api/v1/tours/:id', (req, res) => {
+    const id = req.params.id * 1;
+    let tour = tours.find((t) => t.id === id);
+
+    if (!tour) {
+        return res.status(404).json({
+            status: 'fail',
+            message: 'Invalid tour ID',
+        });
+    }
+
+    const updatedTours = tours.filter((t) => t.id !== id);
+
+    fs.writeFile(dataFilePath, JSON.stringify(updatedTours), (err) => {
+        res.status(204).json({
+            status: 'success',
+            data: null,
         });
     });
 });
