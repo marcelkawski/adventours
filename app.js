@@ -22,22 +22,21 @@ app.get('/api/v1/tours', (req, res) => {
 
 // get the specific tour by id
 app.get('/api/v1/tours/:id', (req, res) => {
-    const id = req.params.id * 1; // to convert string to a number
-    const tour = tours.find((el) => el.id === id);
+    const id = req.params.id * 1;
+    const tour = tours.find((tour) => tour.id === id);
     if (tour) {
-        res.status(200).json({
+        return res.status(200).json({
             status: 'success',
             data: {
                 tour,
             },
         });
-    } else {
-        res.status(404).json({
-            // We had return before "res.status" in the course code to finish the function here. The teacher had it before successful case so that's why he had return here but I do not need it. Moreover, we just have "if" and "else" blocks.
-            status: 'fail',
-            message: 'Invalid tour ID',
-        });
     }
+
+    res.status(404).json({
+        status: 'fail',
+        message: 'Invalid tour ID',
+    });
 });
 
 // create a new tour
@@ -51,6 +50,33 @@ app.post('/api/v1/tours', (req, res) => {
             status: 'success',
             data: {
                 tour: newTour,
+            },
+        });
+    });
+});
+
+// update the specific tour by id
+app.patch('/api/v1/tours/:id', (req, res) => {
+    const id = req.params.id * 1;
+    let tour = tours.find((tour) => tour.id === id);
+
+    if (!tour) {
+        return res.status(404).json({
+            status: 'fail',
+            message: 'Invalid tour ID',
+        });
+    }
+
+    const updatedTour = Object.assign(tour, req.body);
+    const updatedTours = tours.map((tour) =>
+        tour.id === updatedTour.id ? updatedTour : tour
+    );
+
+    fs.writeFile(dataFilePath, JSON.stringify(updatedTours), (err) => {
+        res.status(200).json({
+            status: 'success',
+            data: {
+                updatedTour,
             },
         });
     });
