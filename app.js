@@ -9,6 +9,7 @@ const dataFilePath = `${__dirname}/data/tours-simple.json`;
 
 const tours = JSON.parse(fs.readFileSync(dataFilePath));
 
+// get all the tours
 app.get('/api/v1/tours', (req, res) => {
     res.status(200).json({
         status: 'success',
@@ -19,6 +20,27 @@ app.get('/api/v1/tours', (req, res) => {
     });
 });
 
+// get the specific tour by id
+app.get('/api/v1/tours/:id', (req, res) => {
+    const id = req.params.id * 1; // to convert string to a number
+    const tour = tours.find((el) => el.id === id);
+    if (tour) {
+        res.status(200).json({
+            status: 'success',
+            data: {
+                tour,
+            },
+        });
+    } else {
+        res.status(404).json({
+            // We had return before "res.status" in the course code to finish the function here. The teacher had it before successful case so that's why he had return here but I do not need it. Moreover, we just have "if" and "else" blocks.
+            status: 'fail',
+            message: 'Invalid tour ID',
+        });
+    }
+});
+
+// create a new tour
 app.post('/api/v1/tours', (req, res) => {
     const newId = tours[tours.length - 1].id + 1;
     const newTour = Object.assign({ id: newId }, req.body);
@@ -38,19 +60,3 @@ const port = 3000;
 app.listen(port, () => {
     console.log(`App running on port ${port}...`);
 });
-
-// app.post('/api/v1/tours', (req, res) => {
-//     console.log(req.body); // We can use it thanks to the middleware ("app.use(express.json());"").
-//     res.send('Done.'); // We cannot send two responses now when we have res.json() up in this function.
-// });
-
-// app.get('/', (req, res) => {
-//   //   res.status(200).send('Hello from the server.');
-//   res
-//     .status(200) // default
-//     .json({ message: 'Hello from the server.', app: 'Adventours' }); // Without express we had to define that the response is a json type (Content-Type) but here express takes this work away from us.
-// });
-
-// app.post('/', (req, res) => {
-//   res.send('Posting from the "/" endpoint');
-// });
