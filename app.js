@@ -152,20 +152,27 @@ const deleteUserById = (req, res) => {
 };
 
 // ROUTES
+const toursRouter = express.Router();
+const usersRouter = express.Router();
 
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
+toursRouter.route('/').get(getAllTours).post(createTour);
 
-app.route('/api/v1/tours/:id')
+toursRouter
+    .route('/:id')
     .get(getTourById)
     .patch(updateTourById)
     .delete(deleteTourById);
 
-app.route('/api/v1/users').get(getAllUsers).post(createUser);
+usersRouter.route('/').get(getAllUsers).post(createUser);
 
-app.route('/api/v1/users/:id')
+usersRouter
+    .route('/:id')
     .get(getUserById)
     .patch(updateUserById)
     .delete(deleteUserById);
+
+app.use('/api/v1/tours', toursRouter);
+app.use('/api/v1/users', usersRouter);
 
 // SERVER
 
