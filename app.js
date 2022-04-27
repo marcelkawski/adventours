@@ -1,13 +1,30 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
 
+// MIDDLEWARE
+
+app.use(morgan('dev'));
+
 app.use(express.json()); // middleware to add the body data to the request object ("req") in POST method
+
+app.use((req, res, next) => {
+    console.log('Hello from the middleware 👋');
+    next();
+});
+
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString();
+    next();
+});
 
 const dataFilePath = `${__dirname}/data/tours-simple.json`;
 
 const tours = JSON.parse(fs.readFileSync(dataFilePath));
+
+// ROUTE HANDLERS
 
 const getAllTours = (req, res) => {
     res.status(200).json({
@@ -99,12 +116,16 @@ const deleteTourById = (req, res) => {
     });
 };
 
+// ROUTES
+
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
 
 app.route('/api/v1/tours/:id')
     .get(getTourById)
     .patch(updateTourById)
     .delete(deleteTourById);
+
+// SERVER
 
 const port = 3000;
 app.listen(port, () => {
