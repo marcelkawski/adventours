@@ -16,6 +16,20 @@ exports.checkID = (req, res, next, val) => {
     next();
 };
 
+exports.checkCrTourBody = (req, res, next) => {
+    const body = req.body;
+    if ('name' in body && 'price' in body) next();
+    else {
+        res.status(400).json({
+            status: 'fail',
+            message:
+                'Bad request - "name" or/and "price" are missing. They are required to create a new tour.',
+        });
+    }
+};
+
+// route handlers
+
 exports.getAllTours = (req, res) => {
     res.status(200).json({
         status: 'success',
