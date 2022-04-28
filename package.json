@@ -1,23 +1,23 @@
 {
-  "name": "adventours",
-  "version": "1.0.0",
-  "description": "web app advertising tours made to learn node.js, express and mongoDB",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/marcelkawski/adventours.git"
-  },
-  "author": "Marcel Kawski",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/marcelkawski/adventours/issues"
-  },
-  "homepage": "https://github.com/marcelkawski/adventours#readme",
-  "dependencies": {
-    "express": "^4.17.3",
-    "morgan": "^1.10.0"
-  }
+    "name": "adventours",
+    "version": "1.0.0",
+    "description": "web app advertising tours made to learn node.js, express and mongoDB",
+    "main": "app.js",
+    "scripts": {
+        "start": "nodemon server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/marcelkawski/adventours.git"
+    },
+    "author": "Marcel Kawski",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/marcelkawski/adventours/issues"
+    },
+    "homepage": "https://github.com/marcelkawski/adventours#readme",
+    "dependencies": {
+        "express": "^4.17.3",
+        "morgan": "^1.10.0"
+    }
 }
