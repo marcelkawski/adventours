@@ -3,6 +3,19 @@ const fs = require('fs');
 const dataFilePath = `${__dirname}/../data/tours-simple.json`;
 const tours = JSON.parse(fs.readFileSync(dataFilePath));
 
+exports.checkID = (req, res, next, val) => {
+    console.log(val);
+    const id = req.params.id * 1;
+    let tour = tours.find((t) => t.id === id);
+    if (!tour) {
+        return res.status(404).json({
+            status: 'fail',
+            message: 'Invalid tour ID',
+        });
+    }
+    next();
+};
+
 exports.getAllTours = (req, res) => {
     res.status(200).json({
         status: 'success',
@@ -16,18 +29,11 @@ exports.getAllTours = (req, res) => {
 exports.getTourById = (req, res) => {
     const id = req.params.id * 1;
     const tour = tours.find((t) => t.id === id);
-    if (tour) {
-        return res.status(200).json({
-            status: 'success',
-            data: {
-                tour,
-            },
-        });
-    }
-
-    res.status(404).json({
-        status: 'fail',
-        message: 'Invalid tour ID',
+    return res.status(200).json({
+        status: 'success',
+        data: {
+            tour,
+        },
     });
 };
 
@@ -50,13 +56,6 @@ exports.updateTourById = (req, res) => {
     const id = req.params.id * 1;
     let tour = tours.find((t) => t.id === id);
 
-    if (!tour) {
-        return res.status(404).json({
-            status: 'fail',
-            message: 'Invalid tour ID',
-        });
-    }
-
     const updatedTour = Object.assign(tour, req.body);
     const updatedTours = tours.map((t) =>
         t.id === updatedTour.id ? updatedTour : t
@@ -74,15 +73,6 @@ exports.updateTourById = (req, res) => {
 
 exports.deleteTourById = (req, res) => {
     const id = req.params.id * 1;
-    let tour = tours.find((t) => t.id === id);
-
-    if (!tour) {
-        return res.status(404).json({
-            status: 'fail',
-            message: 'Invalid tour ID',
-        });
-    }
-
     const updatedTours = tours.filter((t) => t.id !== id);
 
     fs.writeFile(dataFilePath, JSON.stringify(updatedTours), (err) => {
