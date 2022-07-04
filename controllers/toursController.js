@@ -6,7 +6,7 @@ const tours = JSON.parse(fs.readFileSync(dataFilePath));
 exports.checkID = (req, res, next, val) => {
     console.log(val);
     const id = req.params.id * 1;
-    let tour = tours.find((t) => t.id === id);
+    const tour = tours.find((t) => t.id === id);
     if (!tour) {
         return res.status(404).json({
             status: 'fail',
@@ -68,7 +68,7 @@ exports.createTour = (req, res) => {
 
 exports.updateTourById = (req, res) => {
     const id = req.params.id * 1;
-    let tour = tours.find((t) => t.id === id);
+    const tour = tours.find((t) => t.id === id);
 
     const updatedTour = Object.assign(tour, req.body);
     const updatedTours = tours.map((t) =>
