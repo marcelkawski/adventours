@@ -18,7 +18,7 @@
             "warn",
             { "argsIgnorePattern": "req|res|next|val|err" }
         ],
-        "import/no-useless-path-segments": "warn",
+        "import/no-useless-path-segments": "off",
         "prefer-object-spread": "off",
         "prefer-destructuring": "off"
     }
