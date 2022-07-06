@@ -37,7 +37,6 @@ exports.getTourById = async (req, res) => {
             message: err,
         });
     }
-    const id = req.params.id * 1;
 };
 
 exports.createTour = async (req, res) => {
