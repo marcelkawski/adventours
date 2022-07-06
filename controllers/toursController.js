@@ -70,7 +70,7 @@ exports.updateTourById = async (req, res) => {
         );
 
         res.status(200).json({
-            message: 'success',
+            status: 'success',
             data: {
                 tour: updatedTour,
             },
@@ -83,18 +83,18 @@ exports.updateTourById = async (req, res) => {
     }
 };
 
-exports.deleteTourById = (req, res) => {
-    // const id = req.params.id * 1;
-    // const updatedTours = tours.filter(t => t.id !== id);
+exports.deleteTourById = async (req, res) => {
+    try {
+        await Tour.findByIdAndDelete(req.params.id);
 
-    // fs.writeFile(dataFilePath, JSON.stringify(updatedTours), err => {
-    //     res.status(204).json({
-    //         status: 'success',
-    //         data: null,
-    //     });
-    // });
-    res.status(204).json({
-        status: 'success',
-        data: null,
-    });
+        res.status(204).json({
+            status: 'success',
+            data: null,
+        });
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err,
+        });
+    }
 };
