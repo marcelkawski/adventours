@@ -20,6 +20,7 @@
         ],
         "import/no-useless-path-segments": "off",
         "prefer-object-spread": "off",
-        "prefer-destructuring": "off"
+        "prefer-destructuring": "off",
+        "node/no-unsupported-features/es-syntax": "off"
     }
 }

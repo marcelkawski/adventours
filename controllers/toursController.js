@@ -4,7 +4,21 @@ const Tour = require('./../models/toursModel');
 
 exports.getAllTours = async (req, res) => {
     try {
-        const tours = await Tour.find();
+        // build query
+        const queryObj = { ...req.query };
+        const excludedFields = ['page', 'sort', 'limit', 'fields'];
+        excludedFields.forEach(field => delete queryObj[field]);
+
+        let queryStr = JSON.stringify(queryObj);
+        queryStr = queryStr.replace(
+            /\b(gt|gte|lt|lte)\b/g,
+            match => `$${match}`
+        ); // to make filter objects contain "$" before the operators
+
+        const query = Tour.find(JSON.parse(queryStr));
+
+        // execute query
+        const tours = await query;
 
         res.status(200).json({
             status: 'success',
