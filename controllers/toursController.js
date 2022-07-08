@@ -23,16 +23,24 @@ exports.getAllTours = async (req, res) => {
             query = query.sort(sortBy);
         } else {
             // default sorting
-            query = query.sort('-createdAt');
+            query = query.sort('-createdAt _id');
+            /* If using the $skip stage with any of sort be sure to include at least one field in your sort that contains unique values, before passing results to the $skip stage.*/
         }
 
-        // fields limiting
+        // fields limiting - Limiting must be either inclusive or exclusive.
         if (req.query.fields) {
             const fields = req.query.fields.split(',').join(' ');
-            query = query.select(fields);
+            if (fields[0] === '-') query = query.select(`${fields} -__v`);
+            else query = query.select(fields);
         } else {
             query = query.select('-__v');
         }
+
+        // pagination
+        const page = req.query.page * 1 || 1;
+        const limit = req.query.limit * 1 || 100;
+        const skip = (page - 1) * limit;
+        query = query.skip(skip).limit(limit);
 
         // execute query
         const tours = await query;
