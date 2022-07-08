@@ -15,7 +15,16 @@ exports.getAllTours = async (req, res) => {
             match => `$${match}`
         ); // to make filter objects contain "$" before the operators
 
-        const query = Tour.find(JSON.parse(queryStr));
+        let query = Tour.find(JSON.parse(queryStr));
+
+        // sorting
+        if (req.query.sort) {
+            const sortBy = req.query.sort.split(',').join(' '); // to replace commas in URLs with spaces
+            query = query.sort(sortBy);
+        } else {
+            // default sorting
+            query = query.sort('-createdAt');
+        }
 
         // execute query
         const tours = await query;
