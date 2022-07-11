@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const tourSchema = new mongoose.Schema(
     {
@@ -8,6 +9,8 @@ const tourSchema = new mongoose.Schema(
             required: [true, 'A tour must have a name.'],
             unique: true,
         },
+
+        slug: String,
 
         duration: {
             type: Number,
@@ -66,6 +69,11 @@ const tourSchema = new mongoose.Schema(
         },
 
         startDates: [Date],
+
+        secret: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         toJSON: { virtuals: true }, // to make virtuals be part of output each time data is outputted as JSON
@@ -77,6 +85,32 @@ const tourSchema = new mongoose.Schema(
 tourSchema.virtual('durationWeeks').get(function () {
     // We use function because arrow function does not get its own "this keyword".
     return this.duration / 7;
+});
+
+// document middleware: Runs before .save() and .create(), but not insertMany()
+tourSchema.pre('save', function (next) {
+    this.slug = slugify(this.name, { lower: true });
+    next();
+});
+
+// query middleware
+tourSchema.pre(/^find/, function (next) {
+    // all methods starting with "find"
+    this.find({ secret: { $ne: true } }); // Because some tours don't have a "secret" attribute.
+    this.start = Date.now();
+    next();
+});
+
+tourSchema.post(/^find/, function (documents, next) {
+    console.log(`Query took: ${Date.now() - this.start} milliseconds.`);
+    next();
+});
+
+// aggregation middleware
+// filter secret tours during aggregation (for getting tours stats)
+tourSchema.pre('aggregate', function (next) {
+    this.pipeline().unshift({ $match: { secret: { $ne: true } } }); // add alement at the beginning of the aggregation pipeline
+    next();
 });
 
 const Tour = mongoose.model('Tour', tourSchema);

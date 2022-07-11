@@ -118,9 +118,9 @@ exports.deleteTourById = async (req, res) => {
 exports.getStats = async (req, res) => {
     try {
         const stats = await Tour.aggregate([
-            {
-                $match: { ratingsAverage: { $gte: 4.5 } },
-            },
+            // {
+            //     $match: { ratingsAverage: { $gte: 4.5 } },
+            // },
             {
                 $group: {
                     // _id: null, // stats for all the tours
@@ -136,9 +136,9 @@ exports.getStats = async (req, res) => {
             {
                 $sort: { avgPrice: 1 }, // 1 - ascending
             },
-            {
-                $match: { _id: { $ne: 'EASY' } },
-            },
+            // {
+            //     $match: { _id: { $ne: 'EASY' } },
+            // },
         ]);
 
         res.status(200).json({
