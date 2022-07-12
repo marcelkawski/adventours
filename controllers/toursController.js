@@ -69,7 +69,7 @@ exports.createTour = async (req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail',
-            message: 'Invalid data sent.',
+            message: err,
         });
     }
 };
@@ -81,7 +81,7 @@ exports.updateTourById = async (req, res) => {
             req.body,
             {
                 new: true, // to get the updated tour
-                runValidators: true,
+                runValidators: true, // to check the validators before updating (e.g. min length)
             }
         );
 
