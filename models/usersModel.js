@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'An user must have a password.'],
         minlength: 8,
+        select: false, // to never show up in any output
     },
 
     passwordConfirm: {
@@ -46,6 +47,14 @@ userSchema.pre('save', async function (next) {
     this.passwordConfirm = undefined; // We delete this field because we need it only for validation. It's required in the schema but required only for input, not to be persisted to db.
     next();
 });
+
+userSchema.methods.correctPassword = async function (
+    givenPassword,
+    userPassword
+) {
+    // this.password; not available since we have select: false in password field
+    return await bcrypt.compare(givenPassword, userPassword);
+};
 
 const User = mongoose.model('User', userSchema);
 
