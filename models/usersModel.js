@@ -37,6 +37,8 @@ const userSchema = new mongoose.Schema({
             message: 'The passwords do not match :(',
         },
     },
+
+    passwordChangedAt: Date,
 });
 
 // encryption (hashing) middleware - between the moment that we receive data and moment when it's persisted to database.
@@ -54,6 +56,21 @@ userSchema.methods.correctPassword = async function (
 ) {
     // this.password; not available since we have select: false in password field
     return await bcrypt.compare(givenPassword, userPassword);
+};
+
+userSchema.methods.changedPwdAfterToken = function (JWTTimestamp) {
+    // checking if user changed password after getting token
+    if (this.passwordChangedAt) {
+        const pwdChangedAtTimestamp = parseInt(
+            this.passwordChangedAt.getTime() / 1000,
+            10
+        );
+        console.log(pwdChangedAtTimestamp, JWTTimestamp);
+        return JWTTimestamp < pwdChangedAtTimestamp;
+    }
+
+    // not changed
+    return false;
 };
 
 const User = mongoose.model('User', userSchema);
