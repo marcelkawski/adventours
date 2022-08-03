@@ -4,6 +4,7 @@ const { promisify } = require('util');
 const User = require('../models/usersModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const sendEmail = require('./../utils/sendEmail');
 
 const signToken = id =>
     jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -113,8 +114,6 @@ exports.restrictTo =
     (req, res, next) => {
         if (!roles.includes(req.user.role)) {
             // req.user is available because of the line "req.user = currentUser;" in exports.protect
-            console.log(roles);
-            console.log(req.user.role);
             return next(
                 new AppError(
                     'You do not have permission to perform this action.',
@@ -125,3 +124,48 @@ exports.restrictTo =
 
         next();
     };
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+    // 1. Get user based on POSTed email.
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+        return next(new AppError('User with that email does not exist.', 404)); // not found
+    }
+
+    // 2. Generate random token.
+    const resetToken = user.createPasswordResetToken();
+    await user.save({ validateBeforeSave: false }); // option to avoid error because of not updating required fields
+
+    console.log({ resetToken }, user.passwordResetToken);
+
+    // 3. Send it to user's email.
+    const resetURL = `${req.protocol}://${req.get(
+        'host'
+    )}/api/v1/users/resetPassword/${resetToken}`;
+
+    const message = `Forgot your password?\nPlease paste this link into your browser to set a new one: ${resetURL}. Your token is valid for 10 minutes.\nIf you did not forget your password, ignore this email.`;
+
+    try {
+        await sendEmail({
+            email: user.email,
+            subject: 'Reset your password',
+            message,
+        });
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Token sent by an email 📨',
+        });
+    } catch (err) {
+        user.passwordResetToken = undefined;
+        user.passwordResetTokenExpires = undefined;
+        await user.save({ validateBeforeSave: false });
+
+        return next(
+            new AppError(
+                'An error occurred sending the email. Please try again.',
+                500
+            )
+        );
+    }
+});
