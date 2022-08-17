@@ -21,9 +21,9 @@ mongoose
     // .connect(process.env.DATABASE_LOCAL, {
     // hosted db
     .connect(db, {
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
+        // useNewUrlParser: true,
+        // useCreateIndex: true,
+        // useFindAndModify: false, // I had to comment this because there was an error from Mongoose (https://stackoverflow.com/questions/68958221/mongoparseerror-options-usecreateindex-usefindandmodify-are-not-supported)
         useUnifiedTopology: true, // from warning from MongoDB displaying when starting the db
     })
     .then(() => {
