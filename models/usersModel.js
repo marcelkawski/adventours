@@ -50,6 +50,12 @@ const userSchema = new mongoose.Schema({
     passwordResetToken: String,
 
     passwordResetTokenExpires: Date,
+
+    active: {
+        type: Boolean,
+        default: true,
+        select: false,
+    },
 });
 
 // encryption (hashing) middleware - between the moment that we receive data and moment when it's persisted to database.
