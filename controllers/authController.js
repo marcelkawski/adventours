@@ -21,11 +21,12 @@ const createSendToken = (user, statusCode, res) => {
         httpOnly: true, // to that sookie cannot be accessed or modifed on any way by browser - only receive, store, send back with every request
     };
 
-    console.log(cookieOptions);
-
     if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // to make cookie be sent only on encrypted connection - by https
 
     res.cookie('jwt', token, cookieOptions);
+
+    // remove password from output
+    user.password = undefined;
 
     res.status(statusCode).json({
         status: 'success',
