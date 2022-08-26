@@ -92,6 +92,34 @@ const tourSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+
+        startLocation: {
+            // embedded/denormalized dataset
+            // To be recognized as GeoJSON we need to have "type" and "coordinates" properties.
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point'], // possible options this field can take
+            },
+            coordinates: [Number],
+            address: String,
+            description: String,
+        },
+
+        locations: [
+            // embedded/denormalized dataset
+            {
+                type: {
+                    type: String,
+                    default: 'Point',
+                    enum: ['Point'],
+                },
+                coordinates: [Number],
+                address: String,
+                description: String,
+                day: Number, // day of the tour
+            },
+        ],
     },
     {
         toJSON: { virtuals: true }, // to make virtuals be part of output each time data is outputted as JSON
