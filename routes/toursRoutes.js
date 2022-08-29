@@ -10,17 +10,19 @@ router
     .get(toursController.aliasTop5Cheapest, toursController.getAllTours);
 
 router.route('/stats').get(toursController.getStats);
-router.route('/monthly-plan/:year').get(toursController.getMonthlyPlan);
+router
+    .route('/monthly-plan/:year')
+    .get(authController.protect, toursController.getMonthlyPlan);
 
 router
     .route('/')
-    .get(authController.protect, toursController.getAllTours)
-    .post(toursController.createTour);
+    .get(toursController.getAllTours)
+    .post(authController.protect, toursController.createTour);
 
 router
     .route('/:id')
     .get(toursController.getTourById)
-    .patch(toursController.updateTourById)
+    .patch(authController.protect, toursController.updateTourById)
     .delete(
         authController.protect,
         authController.restrictTo('admin', 'lead-guide'),

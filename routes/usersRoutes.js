@@ -11,22 +11,13 @@ router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
-router.patch(
-    '/updatePassword',
-    authController.protect,
-    authController.updatePassword
-);
-router.patch(
-    '/updateAccount',
-    authController.protect,
-    usersController.updateAccount
-);
+// protect all routes after this middleware
+router.use(authController.protect);
 
-router.delete(
-    '/deleteAccount',
-    authController.protect,
-    usersController.deleteAccount
-);
+router.patch('/updatePassword', authController.updatePassword);
+router.patch('/updateAccount', usersController.updateAccount);
+
+router.delete('/deleteAccount', usersController.deleteAccount);
 
 router
     .route('/')
