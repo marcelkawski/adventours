@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
+// const User = require('./usersModel'); // for embedding guides into tours
+
 const tourSchema = new mongoose.Schema(
     {
         name: {
@@ -120,6 +122,15 @@ const tourSchema = new mongoose.Schema(
                 day: Number, // day of the tour
             },
         ],
+
+        // guides: Array, // embedding
+        guides: [
+            // referencing
+            {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User',
+            },
+        ],
     },
     {
         toJSON: { virtuals: true }, // to make virtuals be part of output each time data is outputted as JSON
@@ -138,6 +149,13 @@ tourSchema.pre('save', function (next) {
     this.slug = slugify(this.name, { lower: true });
     next();
 });
+
+// embedding guides into tours
+// tourSchema.pre('save', async function (next) {
+//     const guidesPromises = this.guides.map(async id => await User.findById(id));
+//     this.guides = await Promise.all(guidesPromises);
+//     next();
+// });
 
 // query middleware
 tourSchema.pre(/^find/, function (next) {
