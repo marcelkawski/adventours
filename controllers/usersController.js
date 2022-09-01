@@ -90,11 +90,6 @@ exports.getUserById = (req, res) => {
     });
 };
 
-exports.updateUserById = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet implemented.',
-    });
-};
-
+// for admins
+exports.updateUserById = factory.updateOneById(User); // Don't update password using it!
 exports.deleteUserById = factory.deleteOneById(User);

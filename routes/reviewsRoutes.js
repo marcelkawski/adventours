@@ -7,11 +7,15 @@ const router = express.Router({ mergeParams: true }); // mergeParams to get acce
 
 router.use(authController.protect);
 
-router
-    .route('/')
-    .get(reviewsController.getAllReviews)
-    .post(authController.restrictTo('user'), reviewsController.createReview);
+router.route('/').get(reviewsController.getAllReviews).post(
+    authController.restrictTo('user'),
+    reviewsController.setTourUsersIds, // for creating reviews (runs before it)
+    reviewsController.createReview
+);
 
-router.route('/:id').delete(reviewsController.deleteReviewById);
+router
+    .route('/:id')
+    .patch(reviewsController.updateReviewById)
+    .delete(reviewsController.deleteReviewById);
 
 module.exports = router;
