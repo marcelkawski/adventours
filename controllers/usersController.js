@@ -22,17 +22,17 @@ const filterObj = (object, ...allowedFields) => {
 
 // route handlers
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-    const users = await User.find();
-
-    res.status(200).json({
-        status: 'success',
-        results: users.length,
-        data: {
-            users,
-        },
+// for admins
+exports.getUserById = factory.getOneById(User);
+exports.getAllUsers = factory.getAll(User);
+exports.createUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This route is not implemented. Please use /signup instead.',
     });
-});
+};
+exports.updateUserById = factory.updateOneById(User); // Don't update password using it!
+exports.deleteUserById = factory.deleteOneById(User);
 
 exports.updateAccount = catchAsync(async (req, res, next) => {
     // updating owb account data
@@ -75,21 +75,3 @@ exports.deleteAccount = catchAsync(async (req, res, next) => {
         data: null,
     });
 });
-
-exports.createUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet implemented.',
-    });
-};
-
-exports.getUserById = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet implemented.',
-    });
-};
-
-// for admins
-exports.updateUserById = factory.updateOneById(User); // Don't update password using it!
-exports.deleteUserById = factory.deleteOneById(User);

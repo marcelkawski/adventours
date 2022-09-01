@@ -1,7 +1,5 @@
 const Tour = require('./../models/toursModel');
-const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
-const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
 
 // middleware - alias: /top-5-cheapest
@@ -13,42 +11,8 @@ exports.aliasTop5Cheapest = (req, res, next) => {
 };
 
 // route handlers
-
-exports.getAllTours = catchAsync(async (req, res, next) => {
-    //build query
-    const features = new APIFeatures(Tour.find(), req.query)
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-
-    // execute query
-    const tours = await features.query;
-
-    res.status(200).json({
-        status: 'success',
-        results: tours.length,
-        data: {
-            tours,
-        },
-    });
-});
-
-exports.getTourById = catchAsync(async (req, res, next) => {
-    const tour = await Tour.findById(req.params.id).populate('reviews'); // populate from virtual populate (therefore unusually here, not in middleware)
-
-    if (!tour) {
-        return next(new AppError('No tour found with that id :(', 404));
-    }
-
-    res.status(200).json({
-        status: 'success',
-        data: {
-            tour,
-        },
-    });
-});
-
+exports.getTourById = factory.getOneById(Tour, { path: 'reviews' });
+exports.getAllTours = factory.getAll(Tour);
 exports.createTour = factory.createOne(Tour);
 exports.updateTourById = factory.updateOneById(Tour);
 exports.deleteTourById = factory.deleteOneById(Tour);
