@@ -2,6 +2,7 @@ const Tour = require('./../models/toursModel');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const factory = require('./handlerFactory');
 
 // middleware - alias: /top-5-cheapest
 exports.aliasTop5Cheapest = (req, res, next) => {
@@ -77,18 +78,7 @@ exports.updateTourById = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.deleteTourById = catchAsync(async (req, res, next) => {
-    const deletedTour = await Tour.findByIdAndDelete(req.params.id);
-
-    if (!deletedTour) {
-        return next(new AppError('No tour found with that id :(', 404));
-    }
-
-    res.status(204).json({
-        status: 'success',
-        data: null,
-    });
-});
+exports.deleteTourById = factory.deleteOneById(Tour);
 
 exports.getStats = catchAsync(async (req, res, next) => {
     const stats = await Tour.aggregate([
