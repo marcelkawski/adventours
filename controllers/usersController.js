@@ -34,7 +34,13 @@ exports.createUser = (req, res) => {
 exports.updateUserById = factory.updateOneById(User); // Don't update password using it!
 exports.deleteUserById = factory.deleteOneById(User);
 
-exports.updateAccount = catchAsync(async (req, res, next) => {
+exports.getMe = (req, res, next) => {
+    // just setting req.params.id to be used by getOneById in getUserById
+    req.params.id = req.user.id;
+    next();
+};
+
+exports.updateMe = catchAsync(async (req, res, next) => {
     // updating owb account data
     // 1. Create error if user POSTs password data.
     if (req.body.password || req.body.passwordConfirm) {
@@ -67,7 +73,7 @@ exports.updateAccount = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.deleteAccount = catchAsync(async (req, res, next) => {
+exports.deleteMe = catchAsync(async (req, res, next) => {
     await User.findByIdAndUpdate(req.user.id, { active: false });
 
     res.status(204).json({

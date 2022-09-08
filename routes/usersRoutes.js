@@ -14,10 +14,11 @@ router.patch('/resetPassword/:token', authController.resetPassword);
 // protect all routes after this middleware
 router.use(authController.protect);
 
+// for currently logged-in user
+router.get('/me', usersController.getMe, usersController.getUserById);
 router.patch('/updatePassword', authController.updatePassword);
-router.patch('/updateAccount', usersController.updateAccount);
-
-router.delete('/deleteAccount', usersController.deleteAccount);
+router.patch('/updateMe', usersController.updateMe);
+router.delete('/deleteMe', usersController.deleteMe);
 
 router
     .route('/')
