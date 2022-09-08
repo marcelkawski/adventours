@@ -42,6 +42,7 @@ exports.getAll = Model =>
 
         // execute query
         const docs = await features.query;
+        // const docs = await features.query.explain(); // explain() - to get execution statisctics about query
 
         res.status(200).json({
             status: 'success',

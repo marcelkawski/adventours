@@ -138,6 +138,10 @@ const tourSchema = new mongoose.Schema(
     }
 );
 
+// tourSchema.index({ price: 1 }); // ascending order
+tourSchema.index({ price: 1, ratingsAverage: -1 }); // compound index
+tourSchema.index({ slug: 1 });
+
 // duration of tour in weeks
 tourSchema.virtual('durationWeeks').get(function () {
     // We use function because arrow function does not get its own "this keyword".
