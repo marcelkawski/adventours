@@ -96,6 +96,7 @@ exports.updateOneById = Model =>
 exports.deleteOneById = Model =>
     catchAsync(async (req, res, next) => {
         const deletedDoc = await Model.findByIdAndDelete(req.params.id);
+        console.log(deletedDoc);
 
         if (!deletedDoc) {
             return next(

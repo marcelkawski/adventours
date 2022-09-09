@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const Tour = require('./toursModel');
+
 const reviewSchema = new mongoose.Schema(
     {
         author: {
@@ -44,6 +46,56 @@ reviewSchema.pre(/^find/, function (next) {
         select: 'name',
     });
     next();
+});
+
+reviewSchema.statics.calcAvgRating = async function (tourId) {
+    // This is static method because we need to call aggregate on model, not on instance.
+    // this - current model
+    const stats = await this.aggregate([
+        {
+            $match: { tour: tourId },
+        },
+        {
+            $group: {
+                _id: '$tour',
+                nRatings: { $sum: 1 },
+                avgRating: { $avg: '$rating' },
+            },
+        },
+    ]);
+
+    if (stats.length > 0) {
+        await Tour.findByIdAndUpdate(tourId, {
+            ratingsQuantity: stats[0].nRatings,
+            ratingsAverage: stats[0].avgRating,
+        });
+    } else {
+        await Tour.findByIdAndUpdate(tourId, {
+            ratingsQuantity: 0,
+        });
+    }
+};
+
+// updating ratingsAverage and ratingsQuantity when adding review
+reviewSchema.post('save', function () {
+    this.constructor.calcAvgRating(this.tour); // this.constructor = Review (but it's not available yet in this part of code. It's defined below.)
+});
+
+// updating ratingsAverage and ratingsQuantity when updating or deleting review
+// for:
+// findByIdAndUpdate - shorthand for findOneAndUpdate (That's why we have "/^findOneAnd/")
+// findByIdAndDelete - ---||---
+reviewSchema.post(/^findOneAnd/, async review => {
+    if (review) await review.constructor.calcAvgRating(review.tour);
+});
+
+// to set ratingsAverage of tour of deleted review as null when it does not have any reviews anymore
+reviewSchema.post('findOneAndDelete', async review => {
+    const tour = await Tour.findById(review.tour);
+    if (tour.ratingsQuantity === 0) {
+        tour.ratingsAverage = null;
+        await tour.save();
+    }
 });
 
 const Review = mongoose.model('Review', reviewSchema);
