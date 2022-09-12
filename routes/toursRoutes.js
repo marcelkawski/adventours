@@ -45,4 +45,10 @@ router
         toursController.getMonthlyPlan
     );
 
+// now: /tours-within/distance/233/center/36.206511,-115.026708/unit/mi (CLEANER)
+// another way: /tours-within?distance=233&center=36.206511,-115.026708&unit=mi
+router
+    .route('/tours-within/:distance/center/:latlng/unit/:unit')
+    .get(toursController.getToursWithin);
+
 module.exports = router;
