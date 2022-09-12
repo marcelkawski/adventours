@@ -40,6 +40,8 @@ const reviewSchema = new mongoose.Schema(
     }
 );
 
+reviewSchema.index({ tour: 1, author: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function (next) {
     this.populate({
         path: 'author',
@@ -76,12 +78,12 @@ reviewSchema.statics.calcAvgRating = async function (tourId) {
     }
 };
 
-// updating ratingsAverage and ratingsQuantity when adding review
+// updating ratingsAverage and ratingsQuantity when ADDING review
 reviewSchema.post('save', function () {
     this.constructor.calcAvgRating(this.tour); // this.constructor = Review (but it's not available yet in this part of code. It's defined below.)
 });
 
-// updating ratingsAverage and ratingsQuantity when updating or deleting review
+// updating ratingsAverage and ratingsQuantity when UPDATING or DELETING review
 // for:
 // findByIdAndUpdate - shorthand for findOneAndUpdate (That's why we have "/^findOneAnd/")
 // findByIdAndDelete - ---||---
