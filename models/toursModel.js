@@ -193,10 +193,10 @@ tourSchema.post(/^find/, function (documents, next) {
 
 // aggregation middleware
 // filter secret tours during aggregation (for getting tours stats)
-tourSchema.pre('aggregate', function (next) {
-    this.pipeline().unshift({ $match: { secret: { $ne: true } } }); // add alement at the beginning of the aggregation pipeline
-    next();
-});
+// tourSchema.pre('aggregate', function (next) {
+//     this.pipeline().unshift({ $match: { secret: { $ne: true } } }); // add alement at the beginning of the aggregation pipeline
+//     next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 
