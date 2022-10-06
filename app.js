@@ -10,6 +10,7 @@ const path = require('path');
 const toursRouter = require('./routes/toursRoutes');
 const usersRouter = require('./routes/usersRoutes');
 const reviewsRouter = require('./routes/reviewsRoutes');
+const viewsRouter = require('./routes/viewsRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorsController');
 
@@ -68,12 +69,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/', (req, res) => {
-    res.status(200).render('base', {
-        tour: 'The Forest Hiker',
-    });
-});
-
+app.use('/', viewsRouter);
 app.use('/api/v1/tours', toursRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/reviews', reviewsRouter);
