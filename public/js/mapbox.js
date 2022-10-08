@@ -10,6 +10,7 @@ mapboxgl.accessToken =
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mkawski/cl90445ko005715pr399fv6bh',
+    scrollZoom: false,
     // center: [-118.113491, 34.111745],
     // zoom: 10,
     // interactive: false,
@@ -30,6 +31,13 @@ locations.forEach(loc => {
         .setLngLat(loc.coordinates)
         .addTo(map);
 
+    new mapboxgl.Popup({
+        offset: 40,
+    })
+        .setLngLat(loc.coordinates)
+        .setHTML(`<p>day ${loc.day}: ${loc.description}</p>`)
+        .addTo(map);
+
     // extend map bounds to include marker
     bounds.extend(loc.coordinates);
 });
@@ -37,8 +45,8 @@ locations.forEach(loc => {
 map.fitBounds(bounds, {
     padding: {
         // in pixels
-        top: 200,
-        bottom: 200,
+        top: 250,
+        bottom: 150,
         left: 100,
         right: 100,
     },
