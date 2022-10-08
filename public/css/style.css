@@ -515,9 +515,9 @@ body {
     font-size: 1.4rem;
 }
 
-.overview-box__text {
+/* .overview-box__text {
     text-transform: capitalize;
-}
+} */
 
 .overview-box__img {
     border-radius: 50%;
