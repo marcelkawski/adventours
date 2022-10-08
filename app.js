@@ -24,7 +24,8 @@ app.set('views', path.join(__dirname, 'views')); // path to views folder
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Set security HTTP headers.
-app.use(helmet());
+// app.use(helmet()); // before
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' })); // to fix Mapbox errors
 
 // developmnet logging
 if (process.env.NODE_ENV === 'development') {

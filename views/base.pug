@@ -1,20 +1,22 @@
 doctype html
 html
-    head 
-        meta(charset='UTF-8')
-        meta(name='viewport' content='width=device-width, initial-scale=1.0')
-        link(rel='stylesheet' href='/css/style.css')
-        link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
-        link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
-        title Adventours | #{title}
+  head 
+    block head 
+      meta(charset='UTF-8')
+      meta(name='viewport' content='width=device-width, initial-scale=1.0')
+      link(rel='stylesheet' href='/css/style.css')
+      link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
+      link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
+      title Adventours | #{title}
 
-    body 
-        // HEADER
-        include _header
+  body 
+    // HEADER
+    include _header
 
-        // CONTENT 
-        block content
-            h1 placeholder
+    // CONTENT 
+    block content
+      h1 placeholder
 
-        // FOOTER
-        include _footer     
+    // FOOTER
+    include _footer     
+    
