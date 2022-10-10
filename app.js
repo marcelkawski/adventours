@@ -6,6 +6,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 const toursRouter = require('./routes/toursRoutes');
 const usersRouter = require('./routes/usersRoutes');
@@ -43,6 +44,9 @@ app.use('/api', limiter);
 // body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
 
+// Parses data from cookies.
+app.use(cookieParser());
+
 // data sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
@@ -66,7 +70,8 @@ app.use(
 
 // Test middleware.
 app.use((req, res, next) => {
-    req.requestTime = new Date().toISOString();
+    // req.requestTime = new Date().toISOString();
+    console.log(req.cookies); // to display cookies for requests
     next();
 });
 

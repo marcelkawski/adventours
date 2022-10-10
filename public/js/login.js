@@ -1,0 +1,31 @@
+/* eslint-disable */
+
+const login = async (email, password) => {
+    // console.log(email, password);
+    try {
+        const res = await axios({
+            method: 'POST',
+            url: 'http://127.0.0.1:3000/api/v1/users/login',
+            data: {
+                email,
+                password,
+            },
+        });
+        console.log(res);
+    } catch (err) {
+        console.error(err.response.data);
+    }
+};
+
+document.querySelector('.form').addEventListener('submit', e => {
+    /*
+  We normally prevent submit behaviour to check some validation before submitting the form or we need to change values of our input fields or we want to submit using ajax calls. For this purpose, we prevent form to be submitted by using:
+
+  event.preventDefault();
+  // Here comes our custom logic
+  */
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    login(email, password);
+});
