@@ -125,6 +125,29 @@ exports.protect = catchAsync(async (req, res, next) => {
     next();
 });
 
+// only for rendered pages, no errors
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+    // In our entire rendered website the token will always only be sent using the cookie, never an authorization header.
+    if (req.cookies.jwt) {
+        const decodedPayload = await promisify(jwt.verify)(
+            req.cookies.jwt,
+            process.env.JWT_SECRET
+        );
+
+        const currentUser = await User.findById(decodedPayload.id);
+        if (!currentUser) return next();
+
+        if (currentUser.changedPwdAfterToken(decodedPayload.iat)) {
+            return next();
+        }
+
+        // There is a logged in user.
+        res.locals.user = currentUser; // Now every template will have access to res.locals and whatever we put there will be then a variable inside of these templates. So it's like passing data into a template using the render() function.
+        return next();
+    }
+    next();
+});
+
 exports.restrictTo =
     (...roles) =>
     (req, res, next) => {
