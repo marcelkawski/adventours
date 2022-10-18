@@ -5,24 +5,24 @@ Web app advertising tours made to learn node.js, express and mongoDB\
 
 <!-- > Live demo [_here_](https://www.example.com).  -->
 
-## Table of Contents
+## Table of contents
 
-<!-- -   [General Information](#general-information)
--   [Technologies Used](#technologies-used)
+<!-- -   [General information](#general-information)
+-   [Technologies used](#technologies-used)
 -   [Features](#features)
 -   [Screenshots](#screenshots) -->
 
--   [Project Status](#project-status)
+-   [Project status](#project-status)
 -   [Acknowledgements](#acknowledgements)
 
-<!-- ## General Information
+<!-- ## General information
 
 -   Provide general information about your project here.
 -   What problem does it (intend to) solve?
 -   What is the purpose of your project?
 -   Why did you undertake it? -->
 
-<!-- ## Technologies Used
+<!-- ## Technologies used
 
 -   Tech 1 - version 1.0
 -   Tech 2 - version 2.0
@@ -40,7 +40,7 @@ List the ready features here:
 
 <!-- ![Example screenshot](./img/screenshot.png) -->
 
-## Project Status
+## Project status
 
 Project is _in progress_.
 
