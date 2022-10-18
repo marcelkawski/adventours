@@ -1,7 +1,7 @@
 # Adventours
 
-> Web app advertising tours made to learn node.js, express and mongoDB\
-> **App still in progress so beautiful README will be added soon ;)**
+Web app advertising tours made to learn node.js, express and mongoDB\
+**App still in progress so beautiful README will be added soon ;)**
 
 <!-- > Live demo [_here_](https://www.example.com).  -->
 
