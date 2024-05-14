@@ -22,5 +22,9 @@
         "prefer-object-spread": "off",
         "prefer-destructuring": "off",
         "node/no-unsupported-features/es-syntax": "off"
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
     }
 }

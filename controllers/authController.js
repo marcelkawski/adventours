@@ -69,6 +69,14 @@ exports.login = catchAsync(async (req, res, next) => {
     createSendToken(user, 200, res);
 });
 
+exports.logout = (req, res) => {
+    res.cookie('jwt', 'loggedout', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true,
+    });
+    res.status(200).json({ status: 'success' });
+};
+
 exports.protect = catchAsync(async (req, res, next) => {
     // routes only for logged in users
     // 1. Get token and check if it exists.
@@ -126,27 +134,33 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 // only for rendered pages, no errors
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
     // In our entire rendered website the token will always only be sent using the cookie, never an authorization header.
     if (req.cookies.jwt) {
-        const decodedPayload = await promisify(jwt.verify)(
-            req.cookies.jwt,
-            process.env.JWT_SECRET
-        );
+        try {
+            const decodedPayload = await promisify(jwt.verify)(
+                req.cookies.jwt,
+                process.env.JWT_SECRET
+            );
 
-        const currentUser = await User.findById(decodedPayload.id);
-        if (!currentUser) return next();
+            const currentUser = await User.findById(decodedPayload.id);
+            if (!currentUser) return next();
 
-        if (currentUser.changedPwdAfterToken(decodedPayload.iat)) {
+            if (currentUser.changedPwdAfterToken(decodedPayload.iat)) {
+                return next();
+            }
+
+            // There is a logged in user.
+            res.locals.user = currentUser; // Now every template will have access to res.locals and whatever we put there will be then a variable inside of these templates. So it's like passing data into a template using the render() function.
+            return next();
+        } catch (err) {
+            // There is not a logged-in user.
+            // This catch block is to avoid jwt malformed error caused by jwt.verify method because after logging in we set the jwt to 'loggedout'.
             return next();
         }
-
-        // There is a logged in user.
-        res.locals.user = currentUser; // Now every template will have access to res.locals and whatever we put there will be then a variable inside of these templates. So it's like passing data into a template using the render() function.
-        return next();
     }
     next();
-});
+};
 
 exports.restrictTo =
     (...roles) =>
