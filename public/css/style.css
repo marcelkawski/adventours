@@ -1363,7 +1363,7 @@ body {
 }
 
 .form__input:focus:invalid {
-    border-bottom: 3px solid #ff7730;
+    border-bottom: 3px solid #ff0800;
 }
 
 .form__input::-webkit-input-placeholder {

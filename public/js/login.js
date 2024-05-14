@@ -4,7 +4,7 @@ const login = async (email, password) => {
     try {
         const res = await axios({
             method: 'POST',
-            url: 'http://127.0.0.1:3000/api/v1/users/login',
+            url: 'http://localhost:3000/api/v1/users/login',
             data: {
                 email,
                 password,
@@ -12,8 +12,8 @@ const login = async (email, password) => {
         });
 
         if (res.data.status === 'success') {
-            alert('Logged in successfully.');
-            // Redirect to homepage.
+            // alert('Logged in successfully.');
+            // Redirect to homepage after 1.5 s.
             window.setTimeout(() => {
                 location.assign('/');
             }, 1500);
