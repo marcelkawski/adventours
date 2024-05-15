@@ -1,7 +1,34 @@
+const multer = require('multer'); // to upload users' photos
+
 const User = require('./../models/usersModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
+
+const multerStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        // cb - callback function
+        cb(null, 'public/img/users'); // first argument is an error if there is any, the second - actual destination
+    },
+    filename: (req, file, cb) => {
+        // naming convention: "user-<id>-<timestamp>.<extension>" Then we are sure it's unique.
+        const ext = file.mimetype.split('/')[1];
+        cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+    },
+});
+
+// We only want images.
+const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) cb(null, true);
+    else cb(new AppError('Not an image. Please upload an image.', 400), false);
+};
+
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter,
+});
+
+exports.uploadUserPhoto = upload.single('photo'); // 'photo' is the name of the field from which the photo will come
 
 const filterObj = (object, ...allowedFields) => {
     const filteredObj = {};
