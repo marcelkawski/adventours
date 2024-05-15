@@ -12094,6 +12094,7 @@ var logout = exports.logout = /*#__PURE__*/function () {
           res = _context2.sent;
           if (res.data.status === 'success') location.reload(true); // Before we had to refresh the page manually after removing the jwt.
           // true mean we want to reaload from the server, not from the browser cache.
+          // It would be better to redirect to some logout page after that because now when someone is on /me page and logs out then we get an error because we are trying to visit protected page but we are already logged out.
           _context2.next = 10;
           break;
         case 7:
@@ -12249,7 +12250,7 @@ var _login = require("./login");
 
 // DOM ELEMENTS
 var mapBox = document.getElementById('map');
-var logInForm = document.querySelector('.form');
+var logInForm = document.querySelector('.form--login');
 var logOutBtn = document.querySelector('.nav__el--logout');
 
 // for Mapbox
@@ -12296,7 +12297,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55705" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65348" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
