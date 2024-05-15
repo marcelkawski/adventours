@@ -7,7 +7,7 @@ header.header
     //- If there is a "user" variable from authController's isLoggedIn method it means there is a logged-in user.
     if user 
       a.nav__el.nav__el--logout Log out
-      a.nav__el(href="#") 
+      a.nav__el(href='/me') 
         img.nav__user-img(src=`/img/users/${user.photo}` alt=`${user.name}'s photo`)
         span= user.name.split(' ')[0]
     else

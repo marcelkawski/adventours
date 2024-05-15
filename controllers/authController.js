@@ -129,6 +129,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
 
     req.user = currentUser;
+    res.locals.user = currentUser; // To be able to get user when using this middleware function. The same thing was already added before for isLoggedIn function.
     // grant access to protected route
     next();
 });
