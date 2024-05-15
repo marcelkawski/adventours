@@ -41,6 +41,7 @@ exports.getAccount = (req, res) => {
     });
 };
 
+// without using API - just using HTML form
 exports.updateUserData = catchAsync(async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(
         req.user.id,

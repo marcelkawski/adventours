@@ -40,8 +40,9 @@ exports.getMe = (req, res, next) => {
     next();
 };
 
+// for updating user using API
 exports.updateMe = catchAsync(async (req, res, next) => {
-    // updating owb account data
+    // updating account data
     // 1. Create error if user POSTs password data.
     if (req.body.password || req.body.passwordConfirm) {
         return next(
