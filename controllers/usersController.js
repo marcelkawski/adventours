@@ -69,6 +69,7 @@ exports.getMe = (req, res, next) => {
 
 // for updating user using API
 exports.updateMe = catchAsync(async (req, res, next) => {
+    console.log(req);
     // updating account data
     // 1. Create error if user POSTs password data.
     if (req.body.password || req.body.passwordConfirm) {
@@ -82,6 +83,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
     // 2. Filter out unwanted fields names that are not allowed to be updated.
     const filteredBody = filterObj(req.body, 'name', 'email');
+
+    // for saving photos to database
+    if (req.file) filteredBody.photo = req.file.filename;
 
     // 3. Update user document.
     const updatedUser = await User.findByIdAndUpdate(
