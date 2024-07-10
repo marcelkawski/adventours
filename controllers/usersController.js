@@ -1,21 +1,26 @@
 const multer = require('multer'); // to upload users' photos
+const sharp = require('sharp'); // for resizing users' images
 
 const User = require('./../models/usersModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
 
-const multerStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        // cb - callback function
-        cb(null, 'public/img/users'); // first argument is an error if there is any, the second - actual destination
-    },
-    filename: (req, file, cb) => {
-        // naming convention: "user-<id>-<timestamp>.<extension>" Then we are sure it's unique.
-        const ext = file.mimetype.split('/')[1];
-        cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
-    },
-});
+// We no longer need this because we will store images into memory, not to the disk.
+// const multerStorage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         // cb - callback function
+//         cb(null, 'public/img/users'); // first argument is an error if there is any, the second - actual destination
+//     },
+//     filename: (req, file, cb) => {
+//         // naming convention: "user-<id>-<timestamp>.<extension>" Then we are sure it's unique.
+//         const ext = file.mimetype.split('/')[1];
+//         cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+//     },
+// });
+
+// https://dev.to/codexam/how-to-use-multer-to-upload-files-in-nodejs-and-express-2a1a : "The memoryStorage engine allows you to store the uploaded files in memory, as Buffer objects. This can be useful if you want to process the files without saving them."" Before we only saved them locally using multer.diskStorage but now we want to first resize it and then we save it using sharp.toFile().
+const multerStorage = multer.memoryStorage();
 
 // We only want images.
 const multerFilter = (req, file, cb) => {
@@ -29,6 +34,20 @@ const upload = multer({
 });
 
 exports.uploadUserPhoto = upload.single('photo'); // 'photo' is the name of the field from which the photo will come
+
+exports.resizeUserPhoto = (req, res, next) => {
+    if (!req.file) return next();
+
+    req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`; // Now why am I doing it like this? It's because right now this "filename" is not defined. So, when we decide to save the image into memory so as a buffer, the file name will not really get set, but we really need that filename in the next middleware function (We are using it in this line : "if (req.file) filteredBody.photo = req.file.filename;" in updateMe middleware). Previously it was defined in "const multerStorage = multer.diskStorage..." but the changed it to use memoryStorage instead of diskStorage.
+
+    sharp(req.file.buffer)
+        .resize(500, 500)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/users/${req.file.filename}`); // req.file.buffer comes from this line of code: const multerStorage = multer.memoryStorage(); | We want to have images as squares. | jpeg({ quality: 90 }) to compress it a little bit to take less space
+
+    next();
+};
 
 const filterObj = (object, ...allowedFields) => {
     const filteredObj = {};
@@ -69,7 +88,6 @@ exports.getMe = (req, res, next) => {
 
 // for updating user using API
 exports.updateMe = catchAsync(async (req, res, next) => {
-    console.log(req);
     // updating account data
     // 1. Create error if user POSTs password data.
     if (req.body.password || req.body.passwordConfirm) {
@@ -84,7 +102,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     // 2. Filter out unwanted fields names that are not allowed to be updated.
     const filteredBody = filterObj(req.body, 'name', 'email');
 
-    // for saving photos to database
+    // for saving photos names to database
     if (req.file) filteredBody.photo = req.file.filename;
 
     // 3. Update user document.
