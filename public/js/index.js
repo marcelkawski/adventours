@@ -34,7 +34,6 @@ event.preventDefault();
 
 if (logOutBtn) logOutBtn.addEventListener('click', logout);
 
-console.log(userDataForm);
 if (userDataForm)
     userDataForm.addEventListener('submit', e => {
         e.preventDefault();

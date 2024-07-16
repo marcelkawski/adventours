@@ -1,7 +1,66 @@
+const multer = require('multer'); // to upload users' photos
+const sharp = require('sharp'); // for resizing users' images
+
 const Tour = require('./../models/toursModel');
 const catchAsync = require('./../utils/catchAsync');
 const factory = require('./handlerFactory');
 const AppError = require('./../utils/appError');
+
+// Multer configuration for storing tours images
+const multerStorage = multer.memoryStorage();
+
+// We only want images.
+const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) cb(null, true);
+    else cb(new AppError('Not an image. Please upload an image.', 400), false);
+};
+
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter,
+});
+
+exports.uploadTourImages = upload.fields([
+    { name: 'imageCover', maxCount: 1 },
+    { name: 'images', maxCount: 3 },
+]);
+
+exports.resizeTourImages = catchAsync(async (req, res, next) => {
+    if (!req.files.imageCover || !req.files.images) return next();
+
+    // 1) cover image
+    const imageCoverFilename = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+
+    await sharp(req.files.imageCover[0].buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/tours/${imageCoverFilename}`);
+
+    // We update tours using factory.updateOneById(Tour); which takes the whole body to update a tour. You can check it in handlerFactory.js file. So that is why we add this field to the body:
+    req.body.imageCover = imageCoverFilename;
+
+    // 2) other images
+    req.body.images = [];
+
+    const promises = req.files.images.map((file, i) => {
+        const imageFilename = `tour-${req.params.id}-${Date.now()}-${
+            i + 1
+        }.jpeg`;
+
+        req.body.images.push(imageFilename);
+
+        return sharp(file.buffer)
+            .resize(2000, 1333)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toFile(`public/img/tours/${imageFilename}`);
+    });
+
+    await Promise.all(promises);
+
+    next();
+});
 
 // middleware - alias: /top-5-cheapest
 exports.aliasTop5Cheapest = (req, res, next) => {
