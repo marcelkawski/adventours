@@ -13,8 +13,12 @@ const userPasswordForm = document.querySelector('.form-user-password');
 
 // for Mapbox
 if (mapBox) {
-    const locations = JSON.parse(dataset.locations);
+    const locations = JSON.parse(
+        document.getElementById('map').dataset.locations
+    );
     displayMap(locations);
+    // const locations = JSON.parse(dataset.locations);
+    // displayMap(locations);
 }
 
 // for logging in (taken from login.js file)
