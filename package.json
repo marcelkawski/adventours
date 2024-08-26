@@ -31,6 +31,7 @@
         "express-rate-limit": "^6.5.1",
         "helmet": "^5.1.1",
         "hpp": "^0.2.3",
+        "html-to-text": "^9.0.5",
         "jsonwebtoken": "^9.0.2",
         "mapbox-gl": "^2.10.0",
         "mongoose": "^6.5.2",
