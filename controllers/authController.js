@@ -48,7 +48,7 @@ exports.signup = catchAsync(async (req, res, next) => {
         passwordChangedAt: req.body.passwordChangedAt,
     });
 
-    // sending welcome email
+    // Send welcome email
     const url =
         process.env.NODE_ENV === 'production'
             ? `${req.protocol}://${req.get('host')}/me`
@@ -199,18 +199,18 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     await user.save({ validateBeforeSave: false }); // option to avoid error because of not updating required fields
 
     // 3. Send it to user's email.
-    const resetURL = `${req.protocol}://${req.get(
-        'host'
-    )}/api/v1/users/resetPassword/${resetToken}`;
+    const resetUrl =
+        process.env.NODE_ENV === 'production'
+            ? `${req.protocol}://${req.get(
+                  'host'
+              )}/api/v1/users/resetPassword/${resetToken}`
+            : `${req.protocol}://localhost:3000/api/v1/users/resetPassword/${resetToken}`; // FIXME: Fix this hardcoded URL
 
-    const message = `Forgot your password?\nPlease paste this link into your browser to set a new one: ${resetURL}. Your token is valid for 10 minutes.\nIf you did not forget your password, ignore this email.`;
+    const message = `Forgot your password?\nPlease paste this link into your browser to set a new one: ${resetUrl}. Your token is valid for 10 minutes.\nIf you did not forget your password, ignore this email.`;
 
     try {
-        // await sendEmail({
-        //     email: user.email,
-        //     subject: 'Reset your password',
-        //     message,
-        // });
+        // Send  password reset email
+        await new Email(user, resetUrl).sendPasswordReset();
 
         res.status(200).json({
             status: 'success',
