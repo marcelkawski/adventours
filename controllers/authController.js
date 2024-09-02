@@ -5,7 +5,8 @@ const crypto = require('crypto');
 const User = require('../models/usersModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('./../utils/appError');
-const sendEmail = require('./../utils/sendEmail');
+const Email = require('../utils/email');
+const { log } = require('console');
 
 const signToken = id =>
     jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -46,6 +47,13 @@ exports.signup = catchAsync(async (req, res, next) => {
         passwordConfirm: req.body.passwordConfirm,
         passwordChangedAt: req.body.passwordChangedAt,
     });
+
+    // sending welcome email
+    const url =
+        process.env.NODE_ENV === 'production'
+            ? `${req.protocol}://${req.get('host')}/me`
+            : `${req.protocol}://localhost:3000/me`; // The teacher has just this url ^ but I had problems with '127.0.0.1 before. Others too: https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/learn/lecture/15087364#questions/9048124 'FIXME: Remove all these localhosts from the code - have 1 one central place for storing corretc url for chosen env.
+    await new Email(newUser, url).sendWelcome();
 
     createSendToken(newUser, 201, res);
 });
@@ -198,11 +206,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     const message = `Forgot your password?\nPlease paste this link into your browser to set a new one: ${resetURL}. Your token is valid for 10 minutes.\nIf you did not forget your password, ignore this email.`;
 
     try {
-        await sendEmail({
-            email: user.email,
-            subject: 'Reset your password',
-            message,
-        });
+        // await sendEmail({
+        //     email: user.email,
+        //     subject: 'Reset your password',
+        //     message,
+        // });
 
         res.status(200).json({
             status: 'success',
