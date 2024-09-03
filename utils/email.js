@@ -7,13 +7,29 @@ module.exports = class Email {
         this.to = user.email;
         this.firstName = user.name.split(' ')[0];
         this.url = url;
-        this.from = `Marcel Kawski <${process.env.EMAIL_FROM}>`;
+        this.from = `Adventours <${process.env.EMAIL_FROM}>`;
     }
 
     createTransport() {
         if (process.env.NODE_ENV === 'production') {
-            // Sendgrid
-            return 1;
+            // The teacher used Sendgrid:
+            // return nodemailer.createTransport({
+            //     service: 'SendGrid',
+            //     auth: {
+            //         user: process.env.SENDGRID_USERNAME,
+            //         pass: process.env.SENDGRID_PASSWORD,
+            //     },
+            // });
+            // ChatGPT says thet for Mailersend I need this config:
+            return nodemailer.createTransport({
+                host: 'smtp.mailersend.net',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: process.env.EMAIL_SMTP_USERNAME,
+                    pass: process.env.EMAIL_SMTP_USER_PASSWORD,
+                },
+            });
         }
 
         return nodemailer.createTransport({
@@ -52,7 +68,7 @@ module.exports = class Email {
     }
 
     async sendWelcome() {
-        await this.send('welcome', 'Welcome to the Natours Family!');
+        await this.send('welcome', 'Welcome to the Adventours Family!');
     }
 
     async sendPasswordReset() {
