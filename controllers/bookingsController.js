@@ -9,8 +9,6 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     // 1. Get tour currently being booked.
     const tour = await Tour.findById(req.params.tourId);
 
-    console.log(tour);
-
     // 2. Crate checkout session.
     const session = await stripe.checkout.sessions.create({
         // session info
