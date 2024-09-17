@@ -1,5 +1,6 @@
 const Tour = require('./../models/toursModel');
 const User = require('./../models/usersModel');
+const Booking = require('./../models/bookingsModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
@@ -36,10 +37,27 @@ exports.getLoginForm = (req, res) => {
 };
 
 exports.getAccount = (req, res) => {
+    // Why no data is sent from here? Because if we are logged in user object is accessible from request (req).
     res.status(200).render('account', {
-        title: 'Your account',
+        title: 'My account',
     });
 };
+
+exports.getMyTours = catchAsync(async (req, res) => {
+    // We could also get tours using virtual populate.
+    // 1. Find all bookings
+    const bookings = await Booking.find({ user: req.user.id });
+
+    // 2. Find tours with the returned IDs
+    const toursIds = bookings.map(booking => booking.tour);
+    const tours = await Tour.find({ _id: { $in: toursIds } });
+    console.log(tours);
+
+    res.status(200).render('overview', {
+        title: 'My tours',
+        tours,
+    }); // We used the same template as for all the tours because we just display list of tours.
+});
 
 // without using API - just using HTML form
 exports.updateUserData = catchAsync(async (req, res, next) => {
@@ -56,7 +74,7 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
     );
 
     res.status(200).render('account', {
-        title: 'Your account',
+        title: 'My account',
         user: updatedUser, // Without it it would take user from the previous middleware (ptotect) and we would get the old user, before the update.
     });
 });
