@@ -5,6 +5,14 @@ const Booking = require('../models/bookingsModel');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 
+// CRUD operations
+exports.getBookingById = factory.getOneById(Booking);
+exports.getAllBookings = factory.getAll(Booking);
+exports.createBooking = factory.createOne(Booking);
+exports.updateBookingById = factory.updateOneById(Booking);
+exports.deleteBookingById = factory.deleteOneById(Booking);
+
+// checkout
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     // 1. Get tour currently being booked.
     const tour = await Tour.findById(req.params.tourId);
