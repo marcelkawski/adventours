@@ -52,7 +52,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     const url =
         process.env.NODE_ENV === 'production'
             ? `${req.protocol}://${req.get('host')}/me`
-            : `${req.protocol}://localhost:3000/me`; // The teacher has just this url ^ but I had problems with '127.0.0.1 before. Others too: https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/learn/lecture/15087364#questions/9048124 'FIXME: Remove all these localhosts from the code - have 1 one central place for storing corretc url for chosen env.
+            : `${req.protocol}://localhost:3000/me`; // The teacher has just this url ^ but I had problems with '127.0.0.1 before. Others too: https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/learn/lecture/15087364#questions/9048124 'FIXME: Remove all these localhosts from the code - have 1 one central place for storing correct url for chosen env.
     await new Email(newUser, url).sendWelcome();
 
     createSendToken(newUser, 201, res);

@@ -9,8 +9,8 @@ export const updateSettings = async (data, type) => {
         // This condition should be done in better way to avoid accepting values other than 'password' and 'data'.
         const url =
             type === 'password'
-                ? 'http://localhost:3000/api/v1/users/updatePassword'
-                : 'http://localhost:3000/api/v1/users/updateMe';
+                ? '/api/v1/users/updatePassword'
+                : '/api/v1/users/updateMe';
 
         console.log(url);
         console.log(data);

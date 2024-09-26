@@ -6,7 +6,7 @@ export const login = async (email, password) => {
     try {
         const res = await axios({
             method: 'POST',
-            url: 'http://localhost:3000/api/v1/users/login',
+            url: '/api/v1/users/login', // This will work for development and production because API and the website are hosted on the same server.
             data: {
                 email,
                 password,
@@ -31,7 +31,7 @@ export const logout = async () => {
     try {
         const res = await axios({
             method: 'GET',
-            url: 'http://localhost:3000/api/v1/users/logout',
+            url: '/api/v1/users/logout', // This will work for development and production because API and the website are hosted on the same server.
         });
         if (res.data.status === 'success') location.reload(true); // Before we had to refresh the page manually after removing the jwt.
         // true mean we want to reaload from the server, not from the browser cache.

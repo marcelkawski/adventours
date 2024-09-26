@@ -12,8 +12,7 @@ export const bookTour = async tourId => {
     try {
         // The teacher did not add catchAsync.
         // 1. Get checkout session from API
-        const checkoutSessionUrl = `/api/v1/bookings/checkout-session/${tourId}`; // What about prod URL ?
-        // The teacher had the whole URL: `http://localhost:3000/api/v1/bookings/checkout-session/${tourId}`. But this shorter one works fine.
+        const checkoutSessionUrl = `/api/v1/bookings/checkout-session/${tourId}`;
         const session = await axios(checkoutSessionUrl);
 
         // console.log(session);
