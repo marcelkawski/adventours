@@ -34,7 +34,7 @@ const sendErrorDev = (err, req, res) => {
         });
     } else {
         // RENDERED WEBSITE
-        console.error('ERROR 💥', err); // Without it we could not see the error.
+        console.error('ERROR 💥', err); // Without it we could not see the error. This log stayed here to appear in our hosting platform on production.
         res.status(err.statusCode).render('error', {
             title: 'Something went wrong 😞',
             msg: err.message,
@@ -53,7 +53,7 @@ const sendErrorProd = (err, req, res) => {
             });
         } else {
             // programming or other unknown error: Don't leak error details.
-            console.error('ERROR 💥', err);
+            console.error('ERROR 💥', err); // This log stayed here to appear in our hosting platform on production.
             res.status(500).json({
                 status: 'error',
                 message: 'Something went wrong 😞',
@@ -69,7 +69,7 @@ const sendErrorProd = (err, req, res) => {
             });
         } else {
             // programming or other unknown error: Don't leak error details.
-            console.error('ERROR 💥', err);
+            console.error('ERROR 💥', err); // This log stayed here to appear in our hosting platform on production.
             res.status(err.statusCode).render('error', {
                 title: 'Something went wrong 😞',
                 msg: 'Please try again later.',
@@ -79,7 +79,7 @@ const sendErrorProd = (err, req, res) => {
 };
 
 module.exports = (err, req, res, next) => {
-    console.log(err.stack); // stack trace: call stack of error
+    // console.log(err.stack); // stack trace: call stack of error
 
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';

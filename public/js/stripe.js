@@ -16,7 +16,7 @@ export const bookTour = async tourId => {
         // The teacher had the whole URL: `http://localhost:3000/api/v1/bookings/checkout-session/${tourId}`. But this shorter one works fine.
         const session = await axios(checkoutSessionUrl);
 
-        console.log(session);
+        // console.log(session);
 
         // 2. Create checkout form + charge credit card
         window.location.replace(session.data.session.url);
