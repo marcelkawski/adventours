@@ -43,3 +43,11 @@ process.on('unhandledRejection', err => {
         process.exit(1);
     });
 });
+
+// Responding to a SIGTERM Signal event when using Heroku - Heroku restarts dynos (containers on which app runs) every 24 hours. To avoid shutting down when some request is handled we need to react to it properly.
+// process.on('SIGTERM', () => {
+//     console.log(`SIGTERM received. Shutting down gracefully...`);
+//     server.close(() => {
+//         console.log('💥 Process terminated!');
+//     });
+// });
