@@ -8,6 +8,7 @@ const hpp = require('hpp');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const toursRouter = require('./routes/toursRoutes');
 const usersRouter = require('./routes/usersRoutes');
@@ -25,6 +26,12 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views')); // path to views folder
 
 // GLOBAL MIDDLEWARE
+// Implement CORS to enable getting requests to API from different sources - browser - used for production deployed app
+// app.use(cors());
+
+// Enable non-simple requests - used for production deployed app
+// app.options('*', cors());
+
 // serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 
