@@ -8,12 +8,13 @@ const hpp = require('hpp');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
-const cors = require('cors');
+// const cors = require('cors');
 
 const toursRouter = require('./routes/toursRoutes');
 const usersRouter = require('./routes/usersRoutes');
 const reviewsRouter = require('./routes/reviewsRoutes');
 const bookingsRouter = require('./routes/bookingsRoutes');
+// const bookingsController = require('./controllers/bookingsController');
 const viewsRouter = require('./routes/viewsRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorsController');
@@ -51,6 +52,13 @@ const limiter = rateLimit({
     message: 'Too many requests from this IP! Please try again in an hour.',
 });
 app.use('/api', limiter);
+
+// for payments on production app to make it in safe way
+// app.post(
+//     '/webhook-checkout',
+//     express.raw({ type: 'application/json' }),
+//     bookingsController.webhookCheckout
+// );
 
 // body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
