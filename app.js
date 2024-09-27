@@ -19,6 +19,8 @@ const globalErrorHandler = require('./controllers/errorsController');
 
 const app = express();
 
+// app.enable('trust proxy'); // Add it when using Heroku
+
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views')); // path to views folder
 

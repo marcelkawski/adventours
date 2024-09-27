@@ -19,10 +19,13 @@ const createSendToken = (user, statusCode, res) => {
         expires: new Date(
             Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
         ),
-        httpOnly: true, // to that sookie cannot be accessed or modifed on any way by browser - only receive, store, send back with every request
+        httpOnly: true, // to that cookie cannot be accessed or modifed on any way by browser - only receive, store, send back with every request
     };
 
     if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // to make cookie be sent only on encrypted connection - by https
+
+    // cookieOptions.secure =
+    //     req.secure || req.header['x=forwarded-proto'] === 'https'; // Use this when using Heroku
 
     res.cookie('jwt', token, cookieOptions);
 
