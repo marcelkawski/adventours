@@ -78,3 +78,12 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
         user: updatedUser, // Without it it would take user from the previous middleware (ptotect) and we would get the old user, before the update.
     });
 });
+
+// exports.alerts = (req, res, next) => {
+//     const { alert } = req.query;
+//     // for handling alerts for payments on prod
+//     if (alert === 'booking')
+//         res.locals.alert =
+//             "Your booking was successful! If your booking doesn't show up here immediately, please come back later.";
+//     next();
+// };

@@ -25,7 +25,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
         // session info
         payment_method_types: ['card'],
         mode: 'payment',
-        // for real deployed production we should use this success_url: `${req.protocol}://${req.get('host')}`
+        // for real deployed production we should use this success_url: `${req.protocol}://${req.get('host')}?alert=booking`
         success_url:
             process.env.NODE_ENV === 'production'
                 ? `${req.protocol}://${req.get('host')}${successUrlQueryString}`
@@ -99,7 +99,7 @@ exports.createBookingAfterCheckout = catchAsync(async (req, res, next) => {
 //     }
 
 //     if (event.type === 'checkout.session.completed')
-//         this.createBookingAfterCheckoutWhenUsingWebhooks(event.data.object);
+//         await this.createBookingAfterCheckoutWhenUsingWebhooks(event.data.object);
 
 //     res.status(200).json({ received: true });
 // };

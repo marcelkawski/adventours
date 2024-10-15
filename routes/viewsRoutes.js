@@ -6,6 +6,9 @@ const bookingsController = require('./../controllers/bookingsController');
 
 const router = express.Router();
 
+// to display alert after successful payment on deployed production app but can be reused for another alert
+// router.use(viewsController.alerts);
+
 // router.use(authController.isLoggedIn); // Before we had this enabled for all the routes. But we query the user in both protect and isLoggedIn middleware functions what is not ideal. So now we put isLoggedIn only to the routes in which we did not use protect.
 
 router.get(
